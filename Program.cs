@@ -19,30 +19,56 @@ namespace Document
             // gather user input
             Console.WriteLine("Enter file name: ");
             string fileName = Console.ReadLine();
+
+            // add .txt extension if one isn't given
             if (string.IsNullOrEmpty(Path.GetExtension(fileName)))
             {
                 fileName += ".txt";
             }
+            else
+                {
+                // continue execution
+                }
             Console.WriteLine("\n------------------");
             Console.WriteLine("Enter file contents: ");
+            string fileContents = Console.ReadLine();
 
-            // write to text file
-            string[] names = new string[] { "Zara Ali", "Nuha Ali" };
-
-            using (StreamWriter sw = new StreamWriter(fileName));
+            // open the file
+            FileStream document;
+            StreamWriter writer;
+            TextWriter oldOut = Console.Out;
+            try
             {
-
-                foreach (string s in names)
-                {
-                    sw.WriteLine(s);
-                }
+                document = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write);
+                writer = new StreamWriter(document);
             }
-            // display output to console
-            Console.Write("\nFile Name: {0}", fileName + Environment.NewLine);
-            Console.WriteLine("------------------");
-            Console.WriteLine("------------------");
-            Console.WriteLine("\nPress Enter to exit...");
-            Console.ReadKey();
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR: Unable to access {0}.");
+                Console.WriteLine(e.Message);
+                return;
+            }
+
+            // write to the file
+            int characterCount = fileContents.Length;
+            Console.SetOut(writer);
+            Console.WriteLine("{0}", fileContents);
+            Console.SetOut(oldOut);
+            writer.Close();
+            document.Close();
+            Console.WriteLine("{0} was successfully saved. The document contains {1} characters.", fileName, characterCount);
+
+            // do you want to write another document? (work in progress)
+            //int newFile = Console.Read();
+            //Console.WriteLine("Do you want to save another document?");
+           //if (newFile) == 1
+            //        { Console.WriteLine("test");
+           // }
+
+
+            // exit the program
+            Console.WriteLine("Press Enter to exit...");
+            Console.ReadLine();
         }
     }
 }
